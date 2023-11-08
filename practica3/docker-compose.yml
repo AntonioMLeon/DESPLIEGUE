@@ -1,0 +1,34 @@
+version: '3'
+
+services:
+    nginx:
+      build:
+        context: .
+        dockerfile: Dockerfile-nginx
+      volumes:
+          - ./symfony/:/var/www/symfony/
+      ports:
+        - 8080:80
+      networks:
+        - symfony
+    php:
+      build:
+        context: .
+        dockerfile: Dockerfile-php
+      volumes:
+           - ./symfony/:/var/www/symfony/
+      networks:
+        - symfony
+      depends_on:
+        - mysql
+    mysql:
+      image: mysql
+      ports:
+        - 3310:3306
+      volumes:
+        - ./mysql:/var/lib/mysql
+      networks:
+        - symfony
+networks:
+  symfony:
+

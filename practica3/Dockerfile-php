@@ -1,0 +1,26 @@
+FROM php:8.2-fpm
+
+RUN apt-get update && apt-get install -y
+
+RUN apt-get update && apt-get install -y \
+        git \
+        zlib1g-dev \
+        libxml2-dev \
+        libzip-dev \
+    && docker-php-ext-install \
+        zip \
+        intl \
+		mysqli \
+        pdo pdo_mysql
+    
+RUN curl -sS https://getcomposer.org/installer | php && mv composer.phar /usr/local/bin/composer
+RUN curl -sS https://get.symfony.com/cli/installer | bash
+RUN mv /root/.symfony5/bin/symfony /usr/local/bin/symfony
+
+RUN git config --global user.email "antoniomleonjimenez@gmail.com"
+RUN git config --global user.name "AntonioMLeon"
+
+RUN symfony check:requirements
+
+COPY symfony/ /var/www/symfony
+WORKDIR /var/www/symfony/
