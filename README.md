@@ -118,3 +118,17 @@ Una vez hecho todo lo anterior la distribución de nuestros archivos y carpetas 
 
 ![captura1](distribucioncarpetas.jpg)
 
+##En el terminal
+
+Dentro de nuestro repositorio construimos el __Docker-compose__ con el siguiente comando:
+
+```
+Docker-compose build
+
+```
+Y una vez creado, levantamos el __Docker-compose__ usando el siguiente comando:
+
+```
+Docker-compose up
+
+```
