@@ -116,4 +116,5 @@ networks:
 ```
 Una vez hecho todo lo anterior la distribución de nuestros archivos y carpetas se verá de la siguiente forma:
 
+![captura1](distribucioncarpetas.jpg)
 
