@@ -4,7 +4,7 @@ En esta práctica utilizaremos Symfony para dockerizarla y usarla como network, 
 
 ##NGINX
 
-Tenemos una carpeta llamada nginx con una configuración llamada default.conf:
+Tenemos una carpeta llamada nginx con una configuración llamada __default.conf__ con la siguiente configuración:
 
 ```
 default.conf: server {
@@ -32,5 +32,88 @@ default.conf: server {
 
 ```
 
+Y fuera de la carpeta tenemos nuestro __Dockerfile-nginx__ con la siguiente configuración:
+
+```
+FROM nginx:latest
+
+COPY ./nginx/default.conf /etc/nginx/conf.d/
+
+```
+
+##PHP
+
+Tenemos un __Dockerfile-php__ con la siguiente configuración:
+
+```
+FROM php:8.2-fpm
+
+RUN apt-get update && apt-get install -y
+
+RUN apt-get update && apt-get install -y \
+        git \
+        zlib1g-dev \
+        libxml2-dev \
+        libzip-dev \
+    && docker-php-ext-install \
+        zip \
+        intl \
+		mysqli \
+        pdo pdo_mysql
+    
+RUN curl -sS https://getcomposer.org/installer | php && mv composer.phar /usr/local/bin/composer
+RUN curl -sS https://get.symfony.com/cli/installer | bash
+RUN mv /root/.symfony5/bin/symfony /usr/local/bin/symfony
+
+RUN git config --global user.email "antoniomleonjimenez@gmail.com"
+RUN git config --global user.name "AntonioMLeon"
+
+RUN symfony check:requirements
+
+COPY symfony/ /var/www/symfony
+WORKDIR /var/www/symfony/
+
+```
+##Docker-compose
+
+Nuestro __Docker-compose__ se verá de la siguiente forma:
+
+```
+version: '3'
+
+services:
+    nginx:
+      build:
+        context: .
+        dockerfile: Dockerfile-nginx
+      volumes:
+          - ./symfony/:/var/www/symfony/
+      ports:
+        - 8080:80
+      networks:
+        - symfony
+    php:
+      build:
+        context: .
+        dockerfile: Dockerfile-php
+      volumes:
+           - ./symfony/:/var/www/symfony/
+      networks:
+        - symfony
+      depends_on:
+        - mysql
+    mysql:
+      image: mysql
+      ports:
+        - 3310:3306
+      volumes:
+        - ./mysql:/var/lib/mysql
+      networks:
+        - symfony
+networks:
+  symfony:
+
+```
+Una vez hecho todo lo anterior la distribución de nuestros archivos y carpetas se verá de la siguiente forma:
 
 
