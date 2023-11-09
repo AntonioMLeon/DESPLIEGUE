@@ -132,3 +132,5 @@ Y una vez creado, levantamos el __Docker-compose__ usando el siguiente comando:
 Docker-compose up
 
 ```
+
+DATABASE_URL="mysql://root:password@mysql:3306/db_symfony?serverVersion=10.11.2"
