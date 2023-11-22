@@ -132,5 +132,18 @@ Y una vez creado, levantamos el __Docker-compose__ usando el siguiente comando:
 Docker-compose up
 
 ```
+Una vez hayamos conectado la base de datos, empezamos a crear las tablas con el siguiente comando:
+
+```
+bin/console make:entity
+
+```
+
+Lo siguiente sería rellenar las tablas con datos para poder empezar a hacer las consultas
+
+##MÉTODOS
+
+__GET__
+
 
 DATABASE_URL="mysql://root:password@mysql:3306/db_symfony?serverVersion=10.11.2"
