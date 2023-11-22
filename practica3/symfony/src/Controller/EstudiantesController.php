@@ -114,23 +114,29 @@ class EstudiantesController extends AbstractController
     return $response;
     }
     #[Route('/api/estudiantes', methods: ['POST'])]
-    public function postEstudianteId(Request $request,ManagerRegistry $registry): JsonResponse
+    public function createEstudiantes(Request $request, ManagerRegistry $registry): JsonResponse
     {
-    $entityManager= $registry->getManager();
-    $data=json_decode($request->getContent(),true);
-    
-    $newEstudiante= new Estudiantes();
-    $newEstudiante->setNombre($data['nombre']?? null);
-    $newEstudiante->setApellido($data['apellido']?? null);
-    $newEstudiante->setFechaNacimiento($data['fecha_nacimiento']?? null);
-    $newEstudiante->setDireccion($data['direccion']?? null);
-    $newEstudiante->setTelefono($data['telefono']?? null);
-    $newEstudiante->setCodigoPostal($data['codigo_postal']?? null);
-    $newEstudiante->setEmail($data['email']?? null);
+    $entityManager = $registry->getManager();
 
+    
+    $data = json_decode($request->getContent(), true);
+
+    
+    $newEstudiante = new Estudiantes();
+    $newEstudiante->setNombre($data['nombre'] ?? null);
+    $newEstudiante->setApellido($data['apellido'] ?? null);
+    $newEstudiante->setFechaNacimiento($data['fecha_nacimiento'] ?? null);
+    $newEstudiante->setDireccion($data['direccion'] ?? null);
+    $newEstudiante->setTelefono($data['telefono'] ?? null);
+    $newEstudiante->setCodigoPostal($data['codigo_postal'] ?? null);
+    $newEstudiante->setEmail($data['email'] ?? null);
+    
+
+    
     $entityManager->persist($newEstudiante);
     $entityManager->flush();
 
+    
     return new JsonResponse([
         'success' => true,
         'data' => [
@@ -142,10 +148,11 @@ class EstudiantesController extends AbstractController
                 'direccion' => $newEstudiante->getDireccion(),
                 'telefono' => $newEstudiante->getTelefono(),
                 'codigo_postal' => $newEstudiante->getCodigoPostal(),
-                'email' => $newEstudiante->getEmail()
+                'email' => $newEstudiante->getEmail(),
+                
             ]
         ]
     ]);
-    }
+}
   
 }
