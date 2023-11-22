@@ -39,23 +39,48 @@ class EstudiantesController extends AbstractController
     return $response;
     }
     #[Route('/api/estudiantes/{id}', methods: ['PUT'])]
-    public function editEstudianteId(int $id,ManagerRegistry $registry): JsonResponse
+    public function editEstudianteId(int $id, Request $request,ManagerRegistry $registry): JsonResponse
     {
-    $objEstudiante = new EstudiantesRepository($registry);
-    $estudiantes=$objEstudiante->find($id);
+    $entityManager = $registry->getManager();
+    $objEstudiante = $entityManager->getRepository(Estudiantes::class)->find($id);
+
+    if (!$objEstudiante) {
+        return new JsonResponse(['success' => false, 'message' => 'Estudiante no encontrado'], 404);
+    }
+
+    $nombre = $request->query->get('nombre');
+    $apellido = $request->query->get('apellido');
+    $fecha_nacimiento = $request->query->get('fecha_nacimiento');
+    $direccion = $request->query->get('direccion');
+    $telefono = $request->query->get('telefono');
+    $codigo_postal = $request->query->get('codigo_postal');
+    $email = $request->query->get('email');
+    
+    
+    $objEstudiante->setNombre($nombre ?? $objEstudiante->getNombre());
+    $objEstudiante->setApellido($apellido ?? $objEstudiante->getApellido());
+    $objEstudiante->setFechaNacimiento($fecha_nacimiento ?? $objEstudiante->getFechaNacimiento());
+    $objEstudiante->setDireccion($direccion ?? $objEstudiante->getDireccion());
+    $objEstudiante->setTelefono($telefono ?? $objEstudiante->getTelefono());
+    $objEstudiante->setCodigoPostal($codigo_postal ?? $objEstudiante->getCodigoPostal());
+    $objEstudiante->setEmail($email ?? $objEstudiante->getEmail());
+    
+
+    $entityManager->flush();
+
     $response = new JsonResponse();
     $response->setData([
         'success' => true,
         'data' => [
             [
-                'id' => $estudiantes->getId(),
-                'nombre' => $estudiantes->getNombre(),
-                'apellido' => $estudiantes->getApellido(),
-                'fecha_nacimiento' => $estudiantes->getFechaNacimiento(),
-                'direccion' => $estudiantes->getDireccion(),
-                'telefono' => $estudiantes->getTelefono(),
-                'codigo_postal' => $estudiantes->getCodigoPostal(),
-                'email' => $estudiantes->getEmail()
+                'id' => $objEstudiante->getId(),
+                'nombre' => $objEstudiante->getNombre(),
+                'apellido' => $objEstudiante->getApellido(),
+                'fecha_nacimiento' => $objEstudiante->getFechaNacimiento(),
+                'direccion' => $objEstudiante->getDireccion(),
+                'telefono' => $objEstudiante->getTelefono(),
+                'codigo_postal' => $objEstudiante->getCodigoPostal(),
+                'email' => $objEstudiante->getEmail()
             ]
         ]
     ]);
@@ -95,19 +120,18 @@ class EstudiantesController extends AbstractController
     $data=json_decode($request->getContent(),true);
     
     $newEstudiante= new Estudiantes();
-    $newEstudiante->setNombre($data['nombre']);
-    $newEstudiante->setApellido($data('apellido'));
-    $newEstudiante->setFechaNacimiento($data('fecha_nacimiento'));
-    $newEstudiante->setDireccion($data('direccion'));
-    $newEstudiante->setTelefono($data('telefono'));
-    $newEstudiante->setCodigoPostal($data['codigo_postal']);
-    $newEstudiante->setEmail($data['email']);
+    $newEstudiante->setNombre($data['nombre']?? null);
+    $newEstudiante->setApellido($data['apellido']?? null);
+    $newEstudiante->setFechaNacimiento($data['fecha_nacimiento']?? null);
+    $newEstudiante->setDireccion($data['direccion']?? null);
+    $newEstudiante->setTelefono($data['telefono']?? null);
+    $newEstudiante->setCodigoPostal($data['codigo_postal']?? null);
+    $newEstudiante->setEmail($data['email']?? null);
 
     $entityManager->persist($newEstudiante);
     $entityManager->flush();
 
-    $response = new JsonResponse();
-    $response->setData([
+    return new JsonResponse([
         'success' => true,
         'data' => [
             [
@@ -122,8 +146,6 @@ class EstudiantesController extends AbstractController
             ]
         ]
     ]);
-
-    return $response;
     }
   
 }
