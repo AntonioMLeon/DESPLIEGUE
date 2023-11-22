@@ -145,6 +145,32 @@ Lo siguiente sería rellenar las tablas con datos para poder empezar a hacer las
 
 __GET__
 
+```
+   #[Route('/api/estudiantes/{id}', methods: ['GET', 'HEAD'])]
+    public function showEstudianteId(int $id,ManagerRegistry $registry): JsonResponse
+    {
+    $objEstudiantes = new EstudiantesRepository($registry);
+    $estudiantes=$objEstudiantes->find($id);
+    $response = new JsonResponse();
+    $response->setData([
+        'success' => true,
+        'data' => [
+            [
+                'id' => $estudiantes->getId(),
+                'nombre' => $estudiantes->getNombre(),
+                'apellido' => $estudiantes->getApellido(),
+                'fecha_nacimiento' => $estudiantes->getFechaNacimiento(),
+                'direccion' => $estudiantes->getDireccion(),
+                'telefono' => $estudiantes->getTelefono(),
+                'codigo_postal' => $estudiantes->getCodigoPostal(),
+                'email' => $estudiantes->getEmail()
+            ]
+        ]
+    ]);
+    return $response;
+    }
+
+```
 __PUT__
 
 ```
@@ -196,6 +222,17 @@ __PUT__
     ]);
     return $response;
     }
+```
+__DELETE__
+
+```
+
+```
+
+__POST__
+
+```
+
 ```
 
 DATABASE_URL="mysql://root:password@mysql:3306/db_symfony?serverVersion=10.11.2"
