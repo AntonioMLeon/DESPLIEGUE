@@ -226,7 +226,32 @@ __PUT__
 __DELETE__
 
 ```
+#[Route('/api/estudiantes/{id}', methods: ['DELETE'])]
+    public function deleteEstudianteId(int $id,ManagerRegistry $registry): JsonResponse
+    {
+    $entityManager= $registry->getManager();
+    $objEstudiante = $entityManager->getRepository(Estudiantes::class)->find($id);
 
+    if (!$objEstudiante) {
+        $response = new JsonResponse();
+        $response->setData([
+            'success' => false,
+            'message' => "Estudiante no encontrado"
+        ]);
+        return $response;
+    }
+
+    $entityManager->remove($objEstudiante);
+    $entityManager->flush();
+
+    $response = new JsonResponse();
+    $response->setData([
+        'success' => true,
+        'message' => "Estudiante eliminado correctamente"
+    ]);
+
+    return $response;
+    }
 ```
 
 __POST__
