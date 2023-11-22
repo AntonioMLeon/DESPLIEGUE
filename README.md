@@ -257,7 +257,48 @@ __DELETE__
 __POST__
 
 ```
+#[Route('/api/estudiantes', methods: ['POST'])]
+    public function createEstudiantes(Request $request, ManagerRegistry $registry): JsonResponse
+    {
+    $entityManager = $registry->getManager();
 
+    
+    $data = json_decode($request->getContent(), true);
+
+    
+    $newEstudiante = new Estudiantes();
+    $newEstudiante->setNombre($data['nombre'] ?? null);
+    $newEstudiante->setApellido($data['apellido'] ?? null);
+    $newEstudiante->setFechaNacimiento($data['fecha_nacimiento'] ?? null);
+    $newEstudiante->setDireccion($data['direccion'] ?? null);
+    $newEstudiante->setTelefono($data['telefono'] ?? null);
+    $newEstudiante->setCodigoPostal($data['codigo_postal'] ?? null);
+    $newEstudiante->setEmail($data['email'] ?? null);
+    
+
+    
+    $entityManager->persist($newEstudiante);
+    $entityManager->flush();
+
+    
+    return new JsonResponse([
+        'success' => true,
+        'data' => [
+            [
+                'id' => $newEstudiante->getId(),
+                'nombre' => $newEstudiante->getNombre(),
+                'apellido' => $newEstudiante->getApellido(),
+                'fecha_nacimiento' => $newEstudiante->getFechaNacimiento(),
+                'direccion' => $newEstudiante->getDireccion(),
+                'telefono' => $newEstudiante->getTelefono(),
+                'codigo_postal' => $newEstudiante->getCodigoPostal(),
+                'email' => $newEstudiante->getEmail(),
+                
+            ]
+        ]
+    ]);
+}
 ```
+Todos estos métodos se aplican para la tabla estudiantes, para la tabla profesores sirve igual, simplemente habría que cambiar los nombre de los objetos,variables,etc adaptado al constructor de profesores.
 
 DATABASE_URL="mysql://root:password@mysql:3306/db_symfony?serverVersion=10.11.2"
